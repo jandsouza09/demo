@@ -14,6 +14,6 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadDataService.loadPlayersFromCsv("src/main/resources/player.csv");
+        loadDataService.loadPlayersFromCsv("src/main/resources/Player.csv");
     }
 }
