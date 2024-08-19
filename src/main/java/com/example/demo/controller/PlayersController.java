@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +50,7 @@ public class PlayersController {
         Optional<Players> playerExists = playersRepository.findById(player.getPlayerID());
         if (!playerExists.isPresent()) {
             playersRepository.save(player);
-            URI uri = new URI("api/players/" + player.getPlayerID());
-            return ResponseEntity.created(uri).build();
+            return new ResponseEntity<Players>(player, HttpStatus.CREATED);
         }
         return ResponseEntity.badRequest().build();
     }
