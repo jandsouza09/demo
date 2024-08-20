@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.model.Filters;
 import com.example.demo.model.Players;
 import com.example.demo.model.PlayersRepository;
 
@@ -45,12 +46,30 @@ public class PlayersController {
         return playersRepository.findById(playerID);
     }
 
+    @GetMapping("/players/years")
+    private List<Integer> getBirthYears() {
+        return playersRepository.findDistinctByBirthYear();
+    }
+
     @PostMapping("/players")
     private ResponseEntity<Players> addPlayer(@RequestBody Players player) throws URISyntaxException {
         Optional<Players> playerExists = playersRepository.findById(player.getPlayerID());
         if (!playerExists.isPresent()) {
             playersRepository.save(player);
             return new ResponseEntity<Players>(player, HttpStatus.CREATED);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/players/filters")
+    private ResponseEntity<List<Players>> getPlayersByFilter(@RequestBody Filters filters) {
+        if (filters.getType().equals("city") && filters.getBirthCity() != null) {
+            List<Players> playersData = playersRepository.findByBirthCity(filters.getBirthCity());
+            return new ResponseEntity<List<Players>>(playersData, HttpStatus.OK);
+        }
+        else if (filters.getType().equals("year") && filters.getBirthYear() != null) {
+            List<Players> playersData = playersRepository.findByBirthYear(filters.getBirthYear());
+            return new ResponseEntity<List<Players>>(playersData, HttpStatus.OK);
         }
         return ResponseEntity.badRequest().build();
     }

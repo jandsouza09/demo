@@ -11,20 +11,36 @@ export const MainApp = () => {
   const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [playerData, setPlayerData] = useState<PlayersType[]>([]);
+  const [yearsData, setYearsData] = useState<number[]>([]);
   const { get, post, response, loading, error } = useFetch('/api')
-  const { setData } = useDataContext();
+  const { setAllData, setFilterData, year } = useDataContext();
 
   useEffect(() => { 
     const loadInitialPlayers = async () => {
-      const data = await get('/players/paginated?page=0&size=10');
+      const data = await get('/players');
       if (response.ok) setPlayerData(data)
     }
-    loadInitialPlayers() ;
+    const loadInitialYears = async () => {
+      const data = await get('/players/years');
+      if (response.ok) setYearsData(data)
+    }
+    loadInitialPlayers();
+    loadInitialYears();
   }, []);
 
   useEffect(() => {
-    if (playerData.length > 0) setData(playerData);
+    if (playerData.length > 0) setAllData(playerData);
   }, [playerData]);
+
+  useEffect(() => {
+    if (year) {
+      const loadSelectedData = async () => {
+        const data = await post(`/players/filters`, { type: "year", birthYear: year });
+        if (response.ok) setFilterData(data)
+      }
+      loadSelectedData();
+    }
+  }, [year]);
 
   // const loadMorePlayers = () => {
   //   const loadMore = async () => {
@@ -43,7 +59,8 @@ export const MainApp = () => {
   //   }
   // }
 
-  const options = useMemo(() => playerData.map(player => ({ label: player.nameFirst + " " + player.nameLast, value: player.playerID })), [playerData]);
+  const nameOptions = useMemo(() => playerData.map(player => ({ label: player.nameFirst + " " + player.nameLast, value: player.playerID })), [playerData]);
+  const yearsOptions = useMemo(() => yearsData.map(year => ({ label: year, value: year })), [yearsData]);
 
   return (
     <>
@@ -56,8 +73,11 @@ export const MainApp = () => {
           </Toolbar>
         </AppBar>
       </Box>
+      {/* <CompStyle>
+        {nameOptions.length > 0 && <DropdownComp options={nameOptions} />}
+      </CompStyle> */}
       <CompStyle>
-        {options.length > 0 && <DropdownComp options={options} />}
+        {yearsOptions.length > 0 && <DropdownComp options={yearsOptions} />}
       </CompStyle>
       <CompStyle>
         <TableComp />

@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
+import com.example.demo.model.Filters;
 import com.example.demo.model.Players;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
@@ -56,6 +58,29 @@ class DemoApplicationTests {
 		ResponseEntity<Void> response = restTemplate.withBasicAuth("user","password")
 			.postForEntity("/api/players", newPlayer, Void.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+	}
+
+	@Test
+	@DirtiesContext
+	void shouldFilterByCityAndYear() {
+		Filters filter = new Filters();
+		filter.setType("city");
+		filter.setBirthCity("Denver");
+		ResponseEntity<List> response = restTemplate.withBasicAuth("user","password")
+			.postForEntity("/api/players/filters",filter, List.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		List<Players> players = response.getBody();
+		assertThat(players.size()).isEqualTo(44);
+	}
+
+	@Test
+	@DirtiesContext
+	void shouldGetAllYears() {
+		ResponseEntity<List> response = restTemplate.withBasicAuth("user","password")
+			.getForEntity("/api/players/years", List.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		List<Players> players = response.getBody();
+		assertThat(players.size()).isEqualTo(167);
 	}
 
 }

@@ -9,7 +9,7 @@ type TableCompProps = {
 }
 
 const TableComp = () => {
-    const { data, selectedPlayer } = useDataContext();
+    const { alldata, filterData, year } = useDataContext();
     const tableColumns = [
         { field: 'playerID', headerName: 'Player ID', width: 150 },
         { field: 'nameFirst', headerName: 'First Name', width: 150 },
@@ -20,9 +20,8 @@ const TableComp = () => {
         { field: 'debut', headerName: 'Debut', width: 150 }
       ];
       const tableRows = useMemo(() => {
-        if (selectedPlayer) {
-            const selectedData = data?.filter(player => player.playerID === selectedPlayer);
-            return selectedData?.map(player => ({
+        if (year) {
+            return filterData?.map(player => ({
                 id: player.playerID,
                 playerID: player.playerID,
                 nameFirst: player.nameFirst,
@@ -33,7 +32,7 @@ const TableComp = () => {
                 debut: player.debut
             }));
         }
-        return data?.map(player => ({
+        return alldata?.map(player => ({
             id: player.playerID,
             playerID: player.playerID,
             nameFirst: player.nameFirst,
@@ -43,10 +42,10 @@ const TableComp = () => {
             birthYear: player.birthYear,
             debut: player.debut
         }));
-    },[data, selectedPlayer]);
+    },[alldata, filterData, year]);
 
     return (
-        <div style={{ width: '100%' }}>
+        <div style={{ height: 600, width: '100%' }}>
             <DataGrid rows={tableRows} columns={tableColumns} />
         </div>
     );

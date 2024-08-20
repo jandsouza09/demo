@@ -5,23 +5,26 @@ import { useDataContext } from "../Context/DataContext";
 import { Clear } from "@mui/icons-material";
 
 type DropdownProps = {
-  options: { label: string; value: string }[];
+  options: { label: string | number; value: string | number }[];
   fetchMoreData?: () => void;
   hasMore?: boolean;
 };
 
 const DropdownComp = (props: DropdownProps) => {
-  //const { setSelectedPlayer } = useDataContext();
+  const { setSelectedPlayer, setYear, setFilterData } = useDataContext();
   const [selectedValue, setSelectedValue] = useState<string>('');
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedValue(event.target.value as string);
     //setSelectedPlayer(event.target.value as string);
+    setYear(parseInt(event.target.value));
   }
 
   const onClear = () => {
     setSelectedValue('');
-    //setSelectedPlayer(undefined);
+    setSelectedPlayer(undefined);
+    setYear(undefined);
+    setFilterData(undefined);
   }
 
   return (
@@ -35,10 +38,10 @@ const DropdownComp = (props: DropdownProps) => {
       // >
       // </InfiniteScroll>
     <>
-    <InputLabel sx={{marginBottom: '5px'}}>Select a player</InputLabel>
+    <InputLabel sx={{marginBottom: '5px'}}>Select a year</InputLabel>
     <FormControl sx={{width: '300px', display: 'flex'}}>
       <div style={{display: 'flex', justifyContent: 'space-between' }}>
-        <InputLabel id="demo-simple-select-label">Players</InputLabel>
+        <InputLabel id="demo-simple-select-label">Years</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"

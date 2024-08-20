@@ -12,12 +12,12 @@ export type PlayersType = {
 }
 
 type DataContextProps = {
-    data: PlayersType[] | undefined,
-    setData: (data: any) => void,
-    loading: boolean,
-    setLoading: (loading: boolean) => void,
-    error: Error | undefined,
-    setError: (error: Error | undefined) => void,
+    alldata: PlayersType[] | undefined,
+    setAllData: (data: PlayersType[] | undefined) => void,
+    filterData: PlayersType[] | undefined,
+    setFilterData: (data: PlayersType[] | undefined) => void,
+    year: number | undefined,
+    setYear: (year: number | undefined) => void,
     selectedPlayer: string | undefined,
     setSelectedPlayer: (player: string | undefined) => void
 }
@@ -25,19 +25,19 @@ type DataContextProps = {
 export const DataContext = React.createContext<DataContextProps | undefined>(undefined);
 
 export const DataProvider = (props: {children: ReactNode}) => {
-    const [data, setData] = useState<PlayersType[] | undefined>(undefined);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<Error | undefined>(undefined);
+    const [allData, setAllData] = useState<PlayersType[] | undefined>(undefined);
+    const [filterData, setFilterData] = useState<PlayersType[] | undefined>(undefined);
+    const [year, setYear] = useState<number | undefined>(undefined);
     const [selectedPlayer, setSelectedPlayer] = useState<string | undefined>(undefined);
 
     return (
       <DataContext.Provider value={{
-        data: data,
-        setData: setData,
-        loading: loading,
-        setLoading: setLoading,
-        error: error,
-        setError: setError,
+        alldata: allData,
+        setAllData: setAllData,
+        filterData: filterData,
+        setFilterData: setFilterData,
+        year: year,
+        setYear: setYear,
         selectedPlayer: selectedPlayer,
         setSelectedPlayer: setSelectedPlayer
       }}>
