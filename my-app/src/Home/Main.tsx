@@ -1,4 +1,4 @@
-import { lazy, useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { PlayersType, useDataContext } from "../Context/DataContext"
 import useFetch from "use-http";
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
@@ -14,6 +14,19 @@ export const MainApp = () => {
   const [yearsData, setYearsData] = useState<number[]>([]);
   const { get, post, response, loading, error } = useFetch('/api')
   const { setAllData, setFilterData, year } = useDataContext();
+
+  const initState = { test: 'test' };
+  function reducer(state: { count: number; }, action: { type: string }) {
+    switch (action.type) {
+      case 'increment':
+        return { count: state.count + 1 };
+      case 'decrement':
+        return { count: state.count - 1 };
+      default:
+        throw new Error();
+    }
+  }
+  const [state, dispatcher] = useReducer(reducer, { count: 0 });
 
   useEffect(() => { 
     const loadInitialPlayers = async () => {
